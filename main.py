@@ -7,10 +7,20 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
-class PET(BaseModel):
-    id: int
+# Public attributes
+class PetBase(BaseModel):
     name: str
     species: str
+
+
+# Required attributes to create an instance
+class PetCreate(PetBase):
+    pass
+
+
+# Private attributes of an object Pet()
+class Pet(PetBase):
+    id: int
 
 
 PETS_LIST = [
@@ -19,6 +29,7 @@ PETS_LIST = [
     {"id": 3, "name": "Faruke", "species": "Dog"},
     {"id": 4, "name": "Minnie", "species": "Dog"}
 ]
+ID_COUNTER = 4
 
 
 @app.get('/')
@@ -26,7 +37,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get('/pets', response_model=List[PET])
+@app.get('/pets', response_model=List[PetBase])
 async def list_pets(species: str = None):
     if species:
         return [pet for pet in PETS_LIST if pet["species"] == species]
@@ -42,3 +53,12 @@ async def get_pet(pet_id: int):
             return pet
     else:
         raise HTTPException(status_code=404, detail="Pet not found.")
+
+
+@ app.post('/pets', response_model=Pet)
+async def create_pet(new_pet: PetCreate):
+    if new_pet in PETS_LIST:
+        raise HTTPException(status_code=422, detail="Pet's already in database.")
+    else:
+        PETS_LIST.append(new_pet)
+        return PETS_LIST[new_pet]

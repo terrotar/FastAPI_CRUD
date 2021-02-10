@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from main import app, PETS_LIST
+from main import app, PETS_LIST, ID_COUNTER
 
 
 client = TestClient(app)

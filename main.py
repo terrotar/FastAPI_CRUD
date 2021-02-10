@@ -29,7 +29,7 @@ PETS_LIST = [
     {"id": 3, "name": "Faruke", "species": "Dog"},
     {"id": 4, "name": "Minnie", "species": "Dog"}
 ]
-ID_COUNTER = 4
+ID_COUNTER = 5
 
 
 @app.get('/')
@@ -57,8 +57,14 @@ async def get_pet(pet_id: int):
 
 @ app.post('/pets', response_model=Pet)
 async def create_pet(new_pet: PetCreate):
-    if new_pet in PETS_LIST:
-        raise HTTPException(status_code=422, detail="Pet's already in database.")
+    global ID_COUNTER
+    new_pet = new_pet.dict()
+    for animal in PETS_LIST:
+        if (new_pet["name"] == animal["name"]):
+            if (new_pet["species"] == animal["species"]):
+                raise HTTPException(status_code=422, detail="Pet's already in database.")
     else:
+        new_pet["id"] = ID_COUNTER
+        ID_COUNTER += 1
         PETS_LIST.append(new_pet)
-        return PETS_LIST[new_pet]
+        return new_pet

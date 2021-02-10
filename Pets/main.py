@@ -1,26 +1,11 @@
 from typing import List
 
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+
+from sql_Pets.schemas import PetBase, PetCreate, Pet
 
 
 app = FastAPI()
-
-
-# Public attributes
-class PetBase(BaseModel):
-    name: str
-    species: str
-
-
-# Required attributes to create an instance
-class PetCreate(PetBase):
-    pass
-
-
-# Private attributes of an object Pet()
-class Pet(PetBase):
-    id: int
 
 
 PETS_LIST = [

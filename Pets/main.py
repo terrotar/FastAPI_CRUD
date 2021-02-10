@@ -2,10 +2,24 @@ from typing import List
 
 from fastapi import FastAPI, HTTPException
 
+from sql_Pets import models
+from sql_Pets.database import engine, SessionLocal
 from sql_Pets.schemas import PetBase, PetCreate, Pet
 
 
+# Integrate and use all the other parts we created before.
+models.Base.metadata.create_all(bind=engine)
+
+
 app = FastAPI()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 PETS_LIST = [

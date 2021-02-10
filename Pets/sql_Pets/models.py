@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer
 
-from sql_Pets.database import Base
+from .database import Base
 
 
 class Pet(Base):

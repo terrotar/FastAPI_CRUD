@@ -1,10 +1,12 @@
 from typing import List
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 
-from sql_Pets import models
+from sqlalchemy.orm import Session
+
+from sql_Pets import models, schemas
 from sql_Pets.database import engine, SessionLocal
-from sql_Pets.schemas import PetBase, PetCreate, Pet
+import crud
 
 
 # Integrate and use all the other parts we created before.
@@ -14,6 +16,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
+# Injection of function to get database for query
 def get_db():
     db = SessionLocal()
     try:
@@ -36,13 +39,13 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get('/pets', response_model=List[PetBase])
-async def list_pets(species: str = None):
-    if species:
-        return [pet for pet in PETS_LIST if pet["species"] == species]
-        # Another possibility using lambda...
-        # return list(filter(lambda p: p['species'] == species, PETS_LIST))
-    return PETS_LIST
+@app.get('/pets', response_model=List[schemas.Pet])
+async def list_pets(species: str = None, db: Session = Depends(get_db)):
+    # Possibilities without a database
+    # return [pet for pet in PETS_LIST if pet["species"] == species]
+    # Another possibility using lambda...
+    # return list(filter(lambda p: p['species'] == species, PETS_LIST))
+    return crud.list_pets_with_filter(db, species)
 
 
 @app.get('/pets/{pet_id}')
@@ -54,20 +57,6 @@ async def get_pet(pet_id: int):
         raise HTTPException(status_code=404, detail="Pet not found.")
 
 
-@ app.post('/pets', response_model=Pet)
-async def create_pet(new_pet: PetCreate):
-    global ID_COUNTER
-    new_pet = new_pet.dict()
-    if ((new_pet["name"] == "string")
-            or (new_pet["species"] == "string")):
-        raise HTTPException(status_code=400, detail="Values cant be 'string'.")
-    for animal in PETS_LIST:
-        if ((new_pet["name"] == animal["name"])
-                and (new_pet["species"] == animal["species"])):
-            raise HTTPException(
-                status_code=422, detail="Pet's already in database.")
-    else:
-        new_pet["id"] = ID_COUNTER
-        ID_COUNTER += 1
-        PETS_LIST.append(new_pet)
-        return new_pet
+@ app.post('/pets', response_model=schemas.Pet)
+async def create_pet(new_pet: schemas.PetCreate, db: Session = Depends(get_db)):
+    return crud.create_pet(db, new_pet)

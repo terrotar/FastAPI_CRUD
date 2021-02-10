@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 # Creation of database URL
-SQLALCHEMY_DATABASE_URL = "sqlite:///.sql_app.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///sql_Pets/sql_app.db"
 
 
 # Creation of database conection

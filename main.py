@@ -59,10 +59,14 @@ async def get_pet(pet_id: int):
 async def create_pet(new_pet: PetCreate):
     global ID_COUNTER
     new_pet = new_pet.dict()
+    if ((new_pet["name"] == "string")
+            or (new_pet["species"] == "string")):
+        raise HTTPException(status_code=400, detail="Values cant be 'string'.")
     for animal in PETS_LIST:
-        if (new_pet["name"] == animal["name"]):
-            if (new_pet["species"] == animal["species"]):
-                raise HTTPException(status_code=422, detail="Pet's already in database.")
+        if ((new_pet["name"] == animal["name"])
+                and (new_pet["species"] == animal["species"])):
+            raise HTTPException(
+                status_code=422, detail="Pet's already in database.")
     else:
         new_pet["id"] = ID_COUNTER
         ID_COUNTER += 1

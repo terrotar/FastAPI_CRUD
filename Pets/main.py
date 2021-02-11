@@ -25,15 +25,6 @@ def get_db():
         db.close()
 
 
-PETS_LIST = [
-    {"id": 1, "name": "Jamall", "species": "Cat"},
-    {"id": 2, "name": "Luna", "species": "Cat"},
-    {"id": 3, "name": "Faruke", "species": "Dog"},
-    {"id": 4, "name": "Minnie", "species": "Dog"}
-]
-ID_COUNTER = 5
-
-
 @app.get('/')
 async def root():
     return {"message": "Hello World"}

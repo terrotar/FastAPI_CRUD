@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from sql_Pets import models, schemas
 
 
+# Funcion to list pets with "species" or not
 def list_pets_with_filter(db: Session, species: str = None):
     if species:
         all_pets_filter = db.query(models.Pet).filter(models.Pet.species == species).all()
@@ -30,6 +31,7 @@ def list_pets_with_filter(db: Session, species: str = None):
         return results
 
 
+# Function to create a new_pet
 def create_pet(db: Session, new_pet: schemas.PetCreate):
     pet_db = models.Pet(**new_pet.dict())
     # Same as pet_db = models.Pet(name=new_pet.name, species=new_pet.species)
@@ -50,16 +52,6 @@ def create_pet(db: Session, new_pet: schemas.PetCreate):
                }
 
 
+# Function get a pet by pet_id
 def get_pet(db: Session, pet_id: int):
     return db.query(models.Pet).filter(models.Pet.id == pet_id).first()
-
-
-"""
-@app.get('/pets/{pet_id}')
-async def get_pet(pet_id: int):
-    for pet in PETS_LIST:
-        if pet["id"] == pet_id:
-            return pet
-    else:
-        raise HTTPException(status_code=404, detail="Pet not found.")
-"""

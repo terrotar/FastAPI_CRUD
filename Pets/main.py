@@ -49,10 +49,10 @@ async def list_pets(species: str = None, db: Session = Depends(get_db)):
 
 
 @app.get('/pets/{pet_id}')
-async def get_pet(pet_id: int):
-    for pet in PETS_LIST:
-        if pet["id"] == pet_id:
-            return pet
+async def get_pet(pet_id: int, db: Session = Depends(get_db)):
+    pet_db = crud.get_pet(db, pet_id)
+    if pet_db:
+        return pet_db
     else:
         raise HTTPException(status_code=404, detail="Pet not found.")
 

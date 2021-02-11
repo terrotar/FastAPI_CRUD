@@ -48,3 +48,18 @@ def create_pet(db: Session, new_pet: schemas.PetCreate):
                 "species": pet_db.species,
                 "id": pet_db.id
                }
+
+
+def get_pet(db: Session, pet_id: int):
+    return db.query(models.Pet).filter(models.Pet.id == pet_id).first()
+
+
+"""
+@app.get('/pets/{pet_id}')
+async def get_pet(pet_id: int):
+    for pet in PETS_LIST:
+        if pet["id"] == pet_id:
+            return pet
+    else:
+        raise HTTPException(status_code=404, detail="Pet not found.")
+"""

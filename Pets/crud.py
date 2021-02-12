@@ -35,7 +35,8 @@ def list_pets_with_filter(db: Session, species: str = None, name: str = None):
         if len(results) >= 1:
             return results
         else:
-            raise HTTPException(status_code=422, detail=f"Pet(s) with name({name}) not found.")
+            raise HTTPException(status_code=422,
+                                detail=f"Pet(s) with name({name}) not found.")
     elif species:
         species_filter = db.query(models.Pet).filter(models.Pet.species == species).all()
         results = []

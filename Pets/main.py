@@ -30,12 +30,11 @@ async def root():
     return {"message": "Hello World"}
 
 
+# Route to list pet(s) with optional filter(name and species)
 @app.get('/pets', response_model=List[schemas.Pet])
-async def list_pets(name: str = None, species: str = None, db: Session = Depends(get_db)):
-    # Possibilities without a database
-    # return [pet for pet in PETS_LIST if pet["species"] == species]
-    # Another possibility using lambda...
-    # return list(filter(lambda p: p['species'] == species, PETS_LIST))
+async def list_pets(name: str = None,
+                    species: str = None,
+                    db: Session = Depends(get_db)):
     if species and name:
         return crud.list_pets_with_filter(db, species, name)
     elif name:
@@ -52,6 +51,7 @@ async def list_pets(name: str = None, species: str = None, db: Session = Depends
         return crud.list_pets_with_filter(db)
 
 
+# Route to get a certain pet by it's ID
 @app.get('/pets/{pet_id}')
 async def get_pet(pet_id: int, db: Session = Depends(get_db)):
     pet_db = crud.get_pet(db, pet_id)
@@ -61,11 +61,14 @@ async def get_pet(pet_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Pet not found.")
 
 
+# Route to create a new pet
 @ app.post('/pets', response_model=schemas.Pet)
-async def create_pet(new_pet: schemas.PetCreate, db: Session = Depends(get_db)):
+async def create_pet(new_pet: schemas.PetCreate,
+                     db: Session = Depends(get_db)):
     return crud.create_pet(db, new_pet)
 
 
+# Route to delete a certain pet by it's id
 @app.delete('/pets/{pet_id}')
 async def delete_pet(pet_id: int, db: Session = Depends(get_db)):
     pet_db = crud.get_pet(db, pet_id)

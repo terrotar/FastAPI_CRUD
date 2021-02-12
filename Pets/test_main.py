@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
 from main import app
 
@@ -15,18 +16,15 @@ class TestCreatePet():
                                              })
         assert response.status_code == 400
 
-
-"""
-    def test_create_pet_new_pet_already_exists(self):
-        # Check possibility of create a Pet that already exists..
-        response = client.post('/pets', json={
-                                              "name": "name",
-                                              "species": "species",
-                                              "id": "id"
-                                             })
+    async def test_create_pet_new_pet_already_exists(self):
+        # Check possibility of create a Pet that already exists...
+        duplicate_pet = client.get('/pets/1', data=Session)
+        assert duplicate_pet.status_code == 200
+        duplicate_pet = list(duplicate_pet)
+        # Have to transform into list because crud.create_pet transform
+        # data into dict and a dict can't be transformed into dict
+        response = client.post('/pets', data=(duplicate_pet[0]))
         assert response.status_code == 422
-        # It needs to call the function create_pet to verify
-"""
 
 
 class TestListPets():

@@ -62,14 +62,14 @@ async def get_pet(pet_id: int, db: Session = Depends(get_db)):
 
 
 # Route to create a new pet
-@ app.post('/pets', response_model=schemas.Pet)
+@ app.post('/pets', response_model=schemas.Pet, status_code=201)
 async def create_pet(new_pet: schemas.PetCreate,
                      db: Session = Depends(get_db)):
     return crud.create_pet(db, new_pet)
 
 
 # Route to delete a certain pet by it's id
-@app.delete('/pets/{pet_id}')
+@app.delete('/pets/{pet_id}', status_code=204)
 async def delete_pet(pet_id: int, db: Session = Depends(get_db)):
     pet_db = crud.get_pet(db, pet_id)
     if pet_db:

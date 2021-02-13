@@ -40,6 +40,7 @@ async def list_pets(name: str = None,
         # If you use instead (db, name), the name will be consider
         # species... Found it by creating a test to raise an HTTPResponse
         # returning the name: {name}, but it was returning species: {species}
+        # Don't forget the basics =]
     elif species:
         return crud.list_pets_with_filter(db, species)
     else:

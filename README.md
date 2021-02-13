@@ -32,4 +32,7 @@ a detail message helped me to understand the semantic error I commited. To check
 checkout the function list_pets() in file 'main.py'.
 
 
-Still in development !!! Follow the commits and changes if you want =]
+The project is already done according to the link, but I think it can get better yet. It may change
+a few more additional features, like more tests and optimize the structure of code. Like any code,
+it can always get more clean and better, but I think it seems nice already. Hope it may help you to
+achieve your goals and thanks for your time !

@@ -25,11 +25,6 @@ def get_db():
         db.close()
 
 
-@app.get('/')
-async def root():
-    return {"message": "Hello World"}
-
-
 # Route to list pet(s) with optional filter(name and species)
 @app.get('/pets', response_model=List[schemas.Pet])
 async def list_pets(name: str = None,
@@ -75,4 +70,22 @@ async def delete_pet(pet_id: int, db: Session = Depends(get_db)):
     if pet_db:
         return crud.delete_pet(db, pet_id)
     else:
-        raise HTTPException(status_code=404, detail="Pet not found.")
+        raise HTTPException(status_code=404, detail=f"Pet({pet_id}) not found.")
+
+
+# Route to update a pet name and/or species by pet_id
+@app.put('/pets/{pet_id}')
+async def update_pet(pet_id: int,
+                     name: str = None,
+                     species: str = None,
+                     db: Session = Depends(get_db)):
+    pet_db = crud.get_pet(db, pet_id)
+    if pet_db:
+        if species and name:
+            return crud.update_pet(db, pet_id, name, species)
+        elif name:
+            return crud.update_pet(db, pet_id, name, None)
+        elif species:
+            return crud.update_pet(db, pet_id, None, species)
+    else:
+        raise HTTPException(status_code=404, detail=f"Pet({pet_id}) not found.")

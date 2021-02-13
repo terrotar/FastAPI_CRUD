@@ -66,7 +66,7 @@ def list_pets_with_filter(db: Session, species: str = None, name: str = None):
             return results
         else:
             raise HTTPException(status_code=422,
-                                detail="No pet(s) created.")
+                                detail="No pet(s) found.")
         return results
 
 
@@ -93,10 +93,35 @@ def create_pet(db: Session, new_pet: schemas.PetCreate):
 
 # Function get a pet by pet_id
 def get_pet(db: Session, pet_id: int):
-    return db.query(models.Pet).filter(models.Pet.id == pet_id).first()
+    return db.query(models.Pet).get(pet_id)
+    # Another solution db.query(models.Pet).filter(models.Pet.id == pet_id).first()
 
 
+# Function to delete a pet by pet_id
 def delete_pet(db: Session, pet_id: int):
     db.query(models.Pet).filter(models.Pet.id == pet_id).delete()
     db.commit()
     return {"message": f"Pet {pet_id} deleted."}
+
+
+# Function to update a pet name and/or species by pet_id
+def update_pet(db: Session, pet_id: int, name: str, species: str):
+    pet_changed = db.query(models.Pet).get(pet_id)
+    if name and species:
+        pet_changed.name = name
+        pet_changed.species = species
+        db.commit()
+        db.refresh(pet_changed)
+        return get_pet(db, pet_id)
+    elif name:
+        pet_changed.name = name
+        db.commit()
+        db.refresh(pet_changed)
+        return get_pet(db, pet_id)
+    elif species:
+        pet_changed.species = species
+        db.commit()
+        db.refresh(pet_changed)
+        return get_pet(db, pet_id)
+    else:
+        raise HTTPException(status_code=422, detail=f"Pet({pet_id}) not found.")

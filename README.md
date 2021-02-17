@@ -19,7 +19,7 @@ the beggining to result in a project with less bugs and some additional features
 of list_pets with a name filter. It was very challenging create tests since I don't have much experience
 doing it, particularly after the creation of db. Although it's been a rough time, it increased a lot my
 skills in my personal projects. It became more like a reinterpretation of the tutorial, with my
-personal implements of what would make it a better project. Another simple and well-know file
+personal implements of what I think would increase the project. Another simple and well-know file
 that almost all projects have is the .gitignore, that I started including in my projects. As always,
 I hope that it helps you achieve your goal and increases your skills as it increased mine.
 
